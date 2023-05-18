@@ -1,18 +1,20 @@
 const TelegramBot = require("node-telegram-bot-api");
 const fetch = require("node-fetch");
 
-const whitelist = ["username1", "username2"]; //without @
-const TelegramToken = "telegram-token"; //without bot
+const whitelist = ["username1", "username2"]; //without "@"
+const TelegramToken = "telegram-token"; //without "bot"
 const OpenAIToken = "openai-token";
 
 const bot = new TelegramBot(TelegramToken, {polling: true});
 
-bot.onText(/(.+)/, async (msg, match) => {
+bot.on("message", async msg => {
 	const chatId = msg.chat.id;
-	const text = match[0];
+	const text = msg.text;
 	const messages = [];
 
 	if (!whitelist.includes(msg.from.username)) return;
+	
+	if (text.startsWith("!")) return;
 	
 	if (msg.reply_to_message) {
 		messages.push({
